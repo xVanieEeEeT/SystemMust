@@ -222,96 +222,63 @@ client.on('message', message => {
   }
   });
 
-  client.on('message', async message => {
-      let args = message.content.split(" ");
-      if(message.content.startsWith(prefix + "mute")) {
-        if(!message.member.hasPermission("MUTE_MEMBERS")) return message.channel.send('').then(msg => {
-          msg.delete(3500);
-          message.delete(3500);
-        });
-     
-        if(!message.guild.member(client.user).hasPermission("MUTE_MEMBERS")) return message.channel.send('').then(msg => {
-          msg.delete(3500);
-          message.delete(3500);
-        });
-     
-        let mention = message.mentions.members.first();
-        if(!mention) return  message.channel.send('').then(msg => { 
-          msg.delete(3500);
-          message.delete(3500);
-        });
-     
-        if(mention.id === message.author.id) return message.channel.send('**:x:You Cannot give mute to your self**').then(msg => {
-          msg.delete(3500);
-          message.delete(3500); 
-        });
-       
-        if(mention.hasPermission('ADMINISTRATOR')) return message.channel.send(`**:x: لا يمكن آعطاء ميوت لادارة السيرفر**`); 
-     
-        if(message.guild.member(mention).roles.find('name', 'Muted')) return message.channel.send(`**:information_source: ${mention.user.username} Already Muted**`);
-     
-       
-        if(mention.position >= message.guild.member(message.author).positon) return message.channel.send('You Donot Have Permission **Muted_Members** ').then(msg => {
-          msg.delete(3500);
-          message.delete(3500);
-        });
-       
-        if(mention.positon >= message.guild.member(client.user).positon) return message.channel.send('I Donot Have Permission **Muted_Members**').then(msg => {
-          msg.delete(3500);
-          message.delete(3500); 
-        });
-       
-        let duration = args[2];
-        if(!duration) message.channel.send(`**:hash: You Can Use ${prefix}mute @user Time Reason**`).then(msg => {
-          msg.delete(3500);
-          message.delete(3500);
-        });
-     
-        if(isNaN(duration))  message.channel.send('').then(msg => {
-          msg.delete(3500);
-          message.delete(3500);
-        });
-     
-        let reason = message.content.split(" ").slice(3).join(" ");
-        if(!reason) reason = " [ **لم يذكر لماذا** ] ";
-     
-        let thisEmbed = new Discord.RichEmbed()
-        .setAuthor(mention.user.username, mention.user.avatarURL)
-        .setTitle('**تم آعطائك ميوت**')
-        .addField('**__السيرفر__**',[ message.guild.name ]) 
-        .addField('**__تم آعطائك ميوت بواسطة__**', [ message.author ])
-        .addField('**__آلسبب__**',reason)
-        .addField('**__وقت الميوت__**',duration)
-     
-        let role = message.guild.roles.find('name', 'Muted') || message.guild.roles.get(r => r.name === 'Muted');
-        if(!role) try {
-          message.guild.createRole({
-            name: "Muted",
-            permissions: 0 
-          }).then(r => {
-            message.guild.channels.forEach(c => {
-              c.overwritePermissions(r , {
-                SEND_MESSAGES: false, 
-                READ_MESSAGES_HISTORY: false,
-                ADD_REACTIONS: false
-              });
-            });
-          }); 
-        } catch(e) {
-          console.log(e.stack);
-        }
-        mention.addRole(role).then(() => {
-          mention.send(thisEmbed);
-          message.channel.send(`**:white_check_mark: ${mention.user.username}  Muted! :zipper_mouth:  **  `);
-          mention.setMute(true); 
-        });
-        setTimeout(() => {
-          if(duration === 0) return;
-          mention.setMute(false);
-          mention.removeRole(role)
-        },duration * 60000); 
-      }
-    });
+  client.on('message', async message =>{
+  if (message.author.boss) return;
+
+if (!message.content.startsWith(prefix)) return;
+	let command = message.content.split(" ")[0];
+	 command = command.slice(prefix.length);
+	let args = message.content.split(" ").slice(1);
+	if (command == "mute") {
+		if (!message.channel.guild) return;
+		if(!message.guild.member(message.author).hasPermission("MANAGE_MESSAGES")) return message.reply("انت لا تملك صلاحيات !! ").then(msg => msg.delete(5000));
+		if(!message.guild.member(client.user).hasPermission("MANAGE_MESSAGES")) return message.reply("البوت لايملك صلاحيات ").then(msg => msg.delete(5000));;
+		let user = message.mentions.users.first();
+		let muteRole = message.guild.roles.find("name", "Muted");
+		if (!muteRole) return message.reply("** لا يوجد رتبة الميوت 'Muted' **").then(msg => {msg.delete(5000)});
+		if (message.mentions.users.size < 1) return message.reply('** يجب عليك المنشن اولاً **').then(msg => {msg.delete(5000)});
+		let reason = message.content.split(" ").slice(2).join(" ");
+		message.guild.member(user).addRole(muteRole);
+		const muteembed = new Discord.RichEmbed()
+		.setColor("RANDOM")
+		.setAuthor(`Muted!`, user.displayAvatarURL)
+		.setThumbnail(user.displayAvatarURL)
+		.addField("**:busts_in_silhouette:  المستخدم**",  '**[ ' + `${user.tag}` + ' ]**',true)
+		.addField("**:hammer:  تم بواسطة **", '**[ ' + `${message.author.tag}` + ' ]**',true)
+		.addField("**:book:  السبب**", '**[ ' + `${reason}` + ' ]**',true)
+		.addField("User", user, true)
+		message.channel.send({embed : muteembed});
+		var muteembeddm = new Discord.RichEmbed()
+		.setAuthor(`Muted!`, user.displayAvatarURL)
+		.setDescription(`      
+${user} انت معاقب بميوت كتابي بسبب مخالفة القوانين
+${message.author.tag} تمت معاقبتك بواسطة
+[ ${reason} ] : السبب
+اذا كانت العقوبة عن طريق الخطأ تكلم مع المسؤلين
+`)
+		.setFooter(`في سيرفر : ${message.guild.name}`)
+		.setColor("RANDOM")
+	user.send( muteembeddm);
+  }
+if(command === `unmute`) {
+  if(!message.member.hasPermission("MANAGE_MESSAGES")) return message.channel.sendMessage("**ليس لديك صلاحية لفك عن الشخص ميوت**:x: ").then(m => m.delete(5000));
+if(!message.guild.member(client.user).hasPermission("MANAGE_MESSAGES")) return message.reply("**ما عندي برمشن**").then(msg => msg.delete(6000))
+
+  let toMute = message.guild.member(message.mentions.users.first()) || message.guild.members.get(args[0]);
+  if(!toMute) return message.channel.sendMessage("**عليك المنشن أولاّ**:x: ");
+
+  let role = message.guild.roles.find (r => r.name === "Muted");
+  
+  if(!role || !toMute.roles.has(role.id)) return message.channel.sendMessage("**لم يتم اعطاء هذه شخص ميوت من الأساس**:x:")
+
+  await toMute.removeRole(role)
+  message.channel.sendMessage("**لقد تم فك الميوت عن شخص بنجاح**:white_check_mark:");
+
+  return;
+
+  }
+
+});
 
 
 
