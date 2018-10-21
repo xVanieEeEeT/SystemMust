@@ -532,8 +532,12 @@ client.on('message', message => {
 .addField('     **Mmute** ' ,' **عمل ميوت كتابي للعضو** ')
 .addField('     **Munmute** ' ,' **فك الميوت عن العضو** ')
 .addField('     **Mkick** ' ,' **طرد العضو** ')
-.setColor('#7d2dbe');
-message.author.sendEmbed(embed) .then(
+ .addField('     **Mnew** ' ,' **لفتح تيكت** ')
+ .addField('     **Mclose** ' ,' **لاغلاق التيكت** ')
+
+ .setFooter(message.author.username, message.author.avatarURL)
+.setColor('#7d2dbe')
+message.author.sendEmbed({embed}) .then(
     message.channel.send('**Sent, Check Your DM. :white_check_mark:**')
 )
 }
