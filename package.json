@@ -1,14 +1,18 @@
 {
-  "name": "f5amh",
+  "name": "united",
   "version": "1.0.0",
   "description": "",
-  "main": "bot.js",
+  "main": "account.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "discord.js": "^11.4.2"
+    "ascii-data-table": "^2.1.1",
+    "dateformat": "^3.0.3",
+    "discord.js": "^11.4.2",
+    "fs": "0.0.1-security",
+    "moment": "^2.22.2"
   }
 }
