@@ -3,6 +3,14 @@ const client = new Discord.Client();
 const prefix = "M";
 
 
+client.on('ready', async () => {
+  let guild = client.guilds.get("503072680040464404");
+  setInterval(function(){
+      guild.channels.find(a => a.id === "504965586850283520").setName(`.Vice: [ ${guild.members.filter(a => a.voiceChannel).size} ] ♪`);
+  }, 1000);
+  });
+
+
 const moment = require("moment")
 client.on("guildMemberAdd", m => {
         let room = m.guild.channels.find(a => a.name === 'text');
