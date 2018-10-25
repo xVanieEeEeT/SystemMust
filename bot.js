@@ -13,7 +13,7 @@ client.on('ready', async () => {
   client.on('ready', async () => {
     let guild = client.guilds.get("503072680040464404");
     setInterval(function(){
-        guild.channels.find(a => a.id === "505163437463044096").setName(`.Members: [ ${guild.membersCount} ]`);
+        guild.channels.find(a => a.id === "505163437463044096").setName(`.Members: [ ${guild.members.size} ]`);
     }, 1000);
     });
 
