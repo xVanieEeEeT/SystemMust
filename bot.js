@@ -6,14 +6,14 @@ const prefix = "M";
 client.on('ready', async () => {
   let guild = client.guilds.get("503072680040464404");
   setInterval(function(){
-      guild.channels.find(a => a.id === "504965586850283520").setName(`.Vice: [ ${guild.members.filter(a => a.voiceChannel).size} ] ♪`);
+      guild.channels.find(a => a.id === "504965586850283520").setName(`.Vice: [ ${guild.members.filter(a => a.voiceChannel).size} ] `);
   }, 1000);
   });
 
   client.on('ready', async () => {
     let guild = client.guilds.get("503072680040464404");
     setInterval(function(){
-        guild.channels.find(a => a.id === "505163437463044096").setName(`.Members: [ ${guild.membersCount} ].`);
+        guild.channels.find(a => a.id === "505163437463044096").setName(`.Members: [ ${guild.membersCount} ]`);
     }, 1000);
     });
 
