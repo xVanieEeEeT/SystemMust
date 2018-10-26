@@ -10,12 +10,6 @@ client.on('ready', async () => {
   }, 1000);
   });
 
-  client.on('ready', async () => {
-    let guild = client.guilds.get("503072680040464404");
-    setInterval(function(){
-        guild.channels.find(a => a.id === "505163437463044096").setName(`.Members: [ ${guild.members.size} ]`);
-    }, 1000);
-    });
 
 
 const moment = require("moment")
